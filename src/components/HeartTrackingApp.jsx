@@ -739,7 +739,7 @@ useEffect(() => {
               marginTop: "40px",
               color: "white",
               opacity: 0.7,
-              marginRight: "300px",
+              padding: "0 10px",
             }}
           >
             <p>© {new Date().getFullYear()} CardioFola — Built by Fola 💙</p>
