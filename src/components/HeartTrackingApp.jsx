@@ -225,6 +225,8 @@ useEffect(() => {
       width: "98vw",
       background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
       padding: "20px 0",
+      boxSizing: "border-box",
+
       fontFamily:
         '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif',
     },
@@ -233,6 +235,7 @@ useEffect(() => {
       maxWidth: "1400px",
       margin: "0 auto",
       padding: "0 20px",
+      boxSizing: "border-box",
       
     },
     header: {
