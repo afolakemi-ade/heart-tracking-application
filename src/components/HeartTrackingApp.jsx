@@ -36,7 +36,8 @@ const HeartTrackingApp = () => {
   const [isTraining, setIsTraining] = useState(false);
 
   // Sample historical data for visualization
-  const [historicalData] = useState([
+  const [historicalData, setHistoricalData] = useState([
+
     { date: "2025-06-08", heartRate: 72, systolic: 120, diastolic: 80 },
     { date: "2025-06-09", heartRate: 75, systolic: 118, diastolic: 78 },
     { date: "2025-06-10", heartRate: 68, systolic: 122, diastolic: 82 },
@@ -133,6 +134,16 @@ const HeartTrackingApp = () => {
     };
 
     setReadings([...readings, newReading]);
+    setHistoricalData([
+  ...historicalData,
+  {
+    date: newReading.date,
+    heartRate: newReading.heartRate,
+    systolic: newReading.systolic,
+    diastolic: newReading.diastolic,
+  },
+]);
+
 
     // Make prediction using the neural network
     if (model) {
@@ -195,6 +206,14 @@ const HeartTrackingApp = () => {
         "Monitor blood pressure and heart rate daily",
       ],
     };
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+useEffect(() => {
+  const handleResize = () => setIsMobile(window.innerWidth < 768);
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
+
 
     return tips[prediction.risk] || [];
   };
@@ -203,14 +222,15 @@ const HeartTrackingApp = () => {
   const styles = {
     app: {
       minHeight: "100vh",
-      width: "210vh",
+      width: "100vw",
       background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
       padding: "20px 0",
       fontFamily:
         '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif',
     },
     container: {
-      maxWidth: "1200px",
+      width:"100%",
+      maxWidth: "1400px",
       margin: "0 auto",
       padding: "0 20px",
     },
@@ -248,8 +268,13 @@ const HeartTrackingApp = () => {
       animation: "pulse 2s infinite",
     },
     mainContent: {
-      display: "grid",
-      gridTemplateColumns: "1fr 2fr",
+      // display: "grid",
+  display: "flex",
+flexDirection: "column", // default: stacked on mobile
+gap: "30px",
+
+// Then use media query (optional if you later use CSS-in-JS library)
+
       gap: "30px",
     },
     card: {
@@ -418,296 +443,310 @@ const HeartTrackingApp = () => {
       color: "black"
     },
   };
+// const isMobile = window.innerWidth <= 768;
+const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+useEffect(() => {
+  const handleResize = () => {
+    setIsMobile(window.innerWidth <= 768);
+  };
+
+  window.addEventListener("resize", handleResize);
+
+  // Clean up listener on component unmount
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
 
   return (
-    <div style={styles.app}>
-      <div style={styles.container}>
-        {/* Header */}
-        <div style={styles.header}>
-          <div style={styles.headerTitle}>
-            <Heart size={48} color="#e74c3c" />
-            <h1 style={styles.headerTitleH1}>CardioFola</h1>
+  <div style={styles.app}>
+    <div style={styles.container}>
+      {/* Header */}
+      <div style={styles.header}>
+        <div style={styles.headerTitle}>
+          <Heart size={48} color="#e74c3c" />
+          <h1 style={styles.headerTitleH1}>CardioFola</h1>
+        </div>
+        <p style={styles.headerSubtitle}>
+          Enhanced Heart Tracking with AI-Powered Health Predictions
+        </p>
+        {isTraining && (
+          <div style={styles.trainingIndicator}>
+            <Brain size={20} color="#3498db" />
+            <span>Training AI model...</span>
           </div>
-          <p style={styles.headerSubtitle}>
-            Enhanced Heart Tracking with AI-Powered Health Predictions
-          </p>
-          {isTraining && (
-            <div style={styles.trainingIndicator}>
-              <Brain size={20} color="#3498db" />
-              <span>Training AI model...</span>
+        )}
+      </div>
+
+      {/* Main Content */}
+      <div
+        style={{
+          ...styles.mainContent,
+          flexDirection: isMobile ? "column" : "row",
+        }}
+      >
+        {/* Input Form */}
+        <div>
+          <div style={styles.card}>
+            <h2 style={styles.sectionTitle}>
+              <Activity size={24} color="#3498db" />
+              Record Vitals
+            </h2>
+
+            {/* form inputs... */}
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Heart Rate (BPM) *</label>
+              <input
+                type="number"
+                value={heartRate}
+                onChange={(e) => setHeartRate(e.target.value)}
+                placeholder="e.g., 72"
+                style={styles.input}
+              />
+            </div>
+
+            {/* systolic & diastolic */}
+            <div style={styles.formRow}>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Systolic BP *</label>
+                <input
+                  type="number"
+                  value={bloodPressureSys}
+                  onChange={(e) => setBloodPressureSys(e.target.value)}
+                  placeholder="120"
+                  style={styles.input}
+                />
+              </div>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Diastolic BP *</label>
+                <input
+                  type="number"
+                  value={bloodPressureDia}
+                  onChange={(e) => setBloodPressureDia(e.target.value)}
+                  placeholder="80"
+                  style={styles.input}
+                />
+              </div>
+            </div>
+
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Age *</label>
+              <input
+                type="number"
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
+                placeholder="e.g., 35"
+                style={styles.input}
+              />
+            </div>
+
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Cholesterol (mg/dL)</label>
+              <input
+                type="number"
+                value={cholesterol}
+                onChange={(e) => setCholesterol(e.target.value)}
+                placeholder="e.g., 200"
+                style={styles.input}
+              />
+            </div>
+
+            <button
+              onClick={addReading}
+              disabled={isTraining}
+              style={{
+                ...styles.submitBtn,
+                opacity: isTraining ? 0.6 : 1,
+                cursor: isTraining ? "not-allowed" : "pointer",
+              }}
+            >
+              Add Reading & Analyze
+            </button>
+          </div>
+
+          {/* AI Prediction Results */}
+          {prediction && (
+            <div style={styles.card}>
+              <h3 style={styles.sectionTitle}>
+                <Brain size={20} color="#9b59b6" />
+                AI Health Analysis
+              </h3>
+
+              <div
+                style={{
+                  ...styles.riskIndicator,
+                  ...(riskLevel === "normal"
+                    ? styles.riskIndicatorNormal
+                    : riskLevel === "warning"
+                    ? styles.riskIndicatorWarning
+                    : styles.riskIndicatorDanger),
+                }}
+              >
+                <div style={styles.riskHeader}>
+                  {riskLevel === "normal" && <CheckCircle size={20} />}
+                  {riskLevel !== "normal" && <AlertTriangle size={20} />}
+                  <span style={styles.riskText}>{prediction.risk}</span>
+                  <span style={styles.confidence}>
+                    Confidence: {prediction.confidence}%
+                  </span>
+                </div>
+              </div>
+
+              <div style={styles.riskDetails}>
+                <div style={styles.riskItem}>
+                  <span>Low Risk:</span>
+                  <span style={styles.lowRisk}>{prediction.details.low}%</span>
+                </div>
+                <div style={styles.riskItem}>
+                  <span>Medium Risk:</span>
+                  <span style={styles.mediumRisk}>
+                    {prediction.details.medium}%
+                  </span>
+                </div>
+                <div style={styles.riskItem}>
+                  <span>High Risk:</span>
+                  <span style={styles.highRisk}>
+                    {prediction.details.high}%
+                  </span>
+                </div>
+              </div>
+
+              <div style={styles.recommendations}>
+                <h4>Recommendations:</h4>
+                <ul style={styles.recommendationsList}>
+                  {getHealthTips().map((tip, index) => (
+                    <li key={index} style={styles.recommendationsItem}>
+                      • {tip}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           )}
         </div>
 
-        <div style={styles.mainContent}>
-          {/* Input Form */}
-          <div>
-            <div style={styles.card}>
-              <h2 style={styles.sectionTitle}>
-                <Activity size={24} color="#3498db" />
-                Record Vitals
-              </h2>
-
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Heart Rate (BPM) *</label>
-                <input
-                  type="number"
-                  value={heartRate}
-                  onChange={(e) => setHeartRate(e.target.value)}
-                  placeholder="e.g., 72"
-                  style={styles.input}
-                />
-              </div>
-
-              <div style={styles.formRow}>
-                <div style={styles.formGroup}>
-                  <label style={styles.label}>Systolic BP *</label>
-                  <input
-                    type="number"
-                    value={bloodPressureSys}
-                    onChange={(e) => setBloodPressureSys(e.target.value)}
-                    placeholder="120"
-                    style={styles.input}
+        {/* Charts Section */}
+        <div style={styles.chartsSection}>
+          <div style={{ ...styles.card, ...styles.chartCard }}>
+            <h3 style={styles.sectionTitle}>
+              <TrendingUp size={20} color="#27ae60" />
+              Heart Rate Trends
+            </h3>
+            <div style={styles.chartContainer}>
+              <ResponsiveContainer width="100%" height={300}>
+                <AreaChart data={historicalData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis />
+                  <Tooltip />
+                  <Area
+                    type="monotone"
+                    dataKey="heartRate"
+                    stroke="#3498db"
+                    fill="#3498db"
+                    fillOpacity={0.3}
+                    name="Heart Rate (BPM)"
                   />
-                </div>
-                <div style={styles.formGroup}>
-                  <label style={styles.label}>Diastolic BP *</label>
-                  <input
-                    type="number"
-                    value={bloodPressureDia}
-                    onChange={(e) => setBloodPressureDia(e.target.value)}
-                    placeholder="80"
-                    style={styles.input}
-                  />
-                </div>
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Age *</label>
-                <input
-                  type="number"
-                  value={age}
-                  onChange={(e) => setAge(e.target.value)}
-                  placeholder="e.g., 35"
-                  style={styles.input}
-                />
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Cholesterol (mg/dL)</label>
-                <input
-                  type="number"
-                  value={cholesterol}
-                  onChange={(e) => setCholesterol(e.target.value)}
-                  placeholder="e.g., 200"
-                  style={styles.input}
-                />
-              </div>
-
-              <button
-                onClick={addReading}
-                disabled={isTraining}
-                style={{
-                  ...styles.submitBtn,
-                  opacity: isTraining ? 0.6 : 1,
-                  cursor: isTraining ? "not-allowed" : "pointer",
-                }}
-              >
-                Add Reading & Analyze
-              </button>
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
-
-            {/* AI Prediction Results */}
-            {prediction && (
-              <div style={styles.card}>
-                <h3 style={styles.sectionTitle}>
-                  <Brain size={20} color="#9b59b6" />
-                  AI Health Analysis
-                </h3>
-
-                <div
-                  style={{
-                    ...styles.riskIndicator,
-                    ...(riskLevel === "normal"
-                      ? styles.riskIndicatorNormal
-                      : riskLevel === "warning"
-                      ? styles.riskIndicatorWarning
-                      : styles.riskIndicatorDanger),
-                  }}
-                >
-                  <div style={styles.riskHeader}>
-                    {riskLevel === "normal" && <CheckCircle size={20} />}
-                    {riskLevel !== "normal" && <AlertTriangle size={20} />}
-                    <span style={styles.riskText}>{prediction.risk}</span>
-                    <span style={styles.confidence}>
-                      Confidence: {prediction.confidence}%
-                    </span>
-                  </div>
-                </div>
-
-                <div style={styles.riskDetails}>
-                  <div style={styles.riskItem}>
-                    <span>Low Risk:</span>
-                    <span style={styles.lowRisk}>
-                      {prediction.details.low}%
-                    </span>
-                  </div>
-                  <div style={styles.riskItem}>
-                    <span>Medium Risk:</span>
-                    <span style={styles.mediumRisk}>
-                      {prediction.details.medium}%
-                    </span>
-                  </div>
-                  <div style={styles.riskItem}>
-                    <span>High Risk:</span>
-                    <span style={styles.highRisk}>
-                      {prediction.details.high}%
-                    </span>
-                  </div>
-                </div>
-
-                <div style={styles.recommendations}>
-                  <h4>Recommendations:</h4>
-                  <ul style={styles.recommendationsList}>
-                    {getHealthTips().map((tip, index) => (
-                      <li key={index} style={styles.recommendationsItem}>
-                        • {tip}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            )}
           </div>
 
-          {/* Charts and Analytics */}
-          <div style={styles.chartsSection}>
-            {/* Historical Trends */}
-            <div style={{ ...styles.card, ...styles.chartCard }}>
+          <div style={{ ...styles.card, ...styles.chartCard }}>
+            <h3 style={styles.sectionTitle}>
+              <BarChart3 size={20} color="#e74c3c" />
+              Blood Pressure History
+            </h3>
+            <div style={styles.chartContainer}>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={historicalData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line
+                    type="monotone"
+                    dataKey="systolic"
+                    stroke="#e74c3c"
+                    strokeWidth={2}
+                    name="Systolic"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="diastolic"
+                    stroke="#f39c12"
+                    strokeWidth={2}
+                    name="Diastolic"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {readings.length > 0 && (
+            <div style={styles.card}>
               <h3 style={styles.sectionTitle}>
-                <TrendingUp size={20} color="#27ae60" />
-                Heart Rate Trends
+                <Calendar size={20} color="#8e44ad" />
+                Recent Readings
               </h3>
-              <div style={styles.chartContainer}>
-                <ResponsiveContainer width="100%" height={300}>
-                  <AreaChart data={historicalData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip />
-                    <Area
-                      type="monotone"
-                      dataKey="heartRate"
-                      stroke="#3498db"
-                      fill="#3498db"
-                      fillOpacity={0.3}
-                      name="Heart Rate (BPM)"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
+              <div style={styles.tableContainer}>
+                <table style={styles.readingsTable}>
+                  <thead>
+                    <tr>
+                      <th style={{ ...styles.tableCell, ...styles.tableHeader }}>
+                        Time
+                      </th>
+                      <th style={{ ...styles.tableCell, ...styles.tableHeader }}>
+                        Heart Rate
+                      </th>
+                      <th style={{ ...styles.tableCell, ...styles.tableHeader }}>
+                        Blood Pressure
+                      </th>
+                      <th style={{ ...styles.tableCell, ...styles.tableHeader }}>
+                        Cholesterol
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {readings
+                      .slice(-5)
+                      .reverse()
+                      .map((reading) => (
+                        <tr key={reading.id}>
+                          <td style={styles.tableCell}>{reading.timestamp}</td>
+                          <td style={styles.tableCell}>
+                            {reading.heartRate} BPM
+                          </td>
+                          <td style={styles.tableCell}>
+                            {reading.systolic}/{reading.diastolic}
+                          </td>
+                          <td style={styles.tableCell}>
+                            {reading.cholesterol} mg/dL
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
               </div>
             </div>
+          )}
 
-            {/* Blood Pressure Chart */}
-            <div style={{ ...styles.card, ...styles.chartCard }}>
-              <h3 style={styles.sectionTitle}>
-                <BarChart3 size={20} color="#e74c3c" />
-                Blood Pressure History
-              </h3>
-              <div style={styles.chartContainer}>
-                <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={historicalData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line
-                      type="monotone"
-                      dataKey="systolic"
-                      stroke="#e74c3c"
-                      strokeWidth={2}
-                      name="Systolic"
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="diastolic"
-                      stroke="#f39c12"
-                      strokeWidth={2}
-                      name="Diastolic"
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            {/* Recent Readings */}
-            {readings.length > 0 && (
-              <div style={styles.card}>
-                <h3 style={styles.sectionTitle}>
-                  <Calendar size={20} color="#8e44ad" />
-                  Recent Readings
-                </h3>
-                <div style={styles.tableContainer}>
-                  <table style={styles.readingsTable}>
-                    <thead>
-                      <tr>
-                        <th
-                          style={{ ...styles.tableCell, ...styles.tableHeader }}
-                        >
-                          Time
-                        </th>
-                        <th
-                          style={{ ...styles.tableCell, ...styles.tableHeader }}
-                        >
-                          Heart Rate
-                        </th>
-                        <th
-                          style={{ ...styles.tableCell, ...styles.tableHeader }}
-                        >
-                          Blood Pressure
-                        </th>
-                        <th
-                          style={{ ...styles.tableCell, ...styles.tableHeader }}
-                        >
-                          Cholesterol
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {readings
-                        .slice(-5)
-                        .reverse()
-                        .map((reading) => (
-                          <tr key={reading.id}>
-                            <td style={styles.tableCell}>
-                              {reading.timestamp}
-                            </td>
-                            <td style={styles.tableCell}>
-                              {reading.heartRate} BPM
-                            </td>
-                            <td style={styles.tableCell}>
-                              {reading.systolic}/{reading.diastolic}
-                            </td>
-                            <td style={styles.tableCell}>
-                              {reading.cholesterol} mg/dL
-                            </td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              
-            )}
-            <div style={{ textAlign: "center", marginTop: "40px", color: "white", opacity: 0.7, marginRight:"300px"}}>
-  <p>© {new Date().getFullYear()} CardioFola — Built by Fola 💙</p>
-</div>
-
+          <div
+            style={{
+              textAlign: "center",
+              marginTop: "40px",
+              color: "white",
+              opacity: 0.7,
+              marginRight: "300px",
+            }}
+          >
+            <p>© {new Date().getFullYear()} CardioFola — Built by Fola 💙</p>
           </div>
         </div>
       </div>
     </div>
-  );
+  </div>
+);
+
 };
 
 export default HeartTrackingApp;
