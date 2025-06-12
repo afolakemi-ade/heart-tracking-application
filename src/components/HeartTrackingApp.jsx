@@ -232,7 +232,7 @@ useEffect(() => {
     },
     container: {
       width:"100%",
-      maxWidth: "1400px",
+      maxWidth: "1200px",
       margin: "0 auto",
       padding: "0 20px",
       boxSizing: "border-box",
@@ -306,6 +306,19 @@ gap: "30px",
       gridTemplateColumns: "1fr 1fr",
       gap: "15px",
     },
+    formColumn: {
+  flex: "1 1 500px",        // Grow/shrink nicely
+  maxWidth: "500px",        // Matches input card width
+  width: "100%",            // Full width on small screens
+  boxSizing: "border-box",  // Prevent overflow
+},
+
+chartsColumn: {
+  flex: "1 1 500px",        // Same as form
+  maxWidth: "500px",        // Matches input card
+  width: "100%",
+  boxSizing: "border-box",
+},
     label: {
       display: "block",
       marginBottom: "8px",
@@ -416,6 +429,8 @@ gap: "30px",
       display: "flex",
       flexDirection: "column",
       gap: "20px",
+      flex: 1,
+    
     },
     chartCard: {
       minHeight: "400px",
@@ -485,11 +500,12 @@ useEffect(() => {
       <div
         style={{
           ...styles.mainContent,
-          flexDirection: isMobile ? "column" : "row",
+            flexDirection: isMobile ? "column" : "row",
+          gap:"30px",
         }}
       >
         {/* Input Form */}
-        <div>
+        <div style={styles.formColumn}>
           <div style={styles.card}>
             <h2 style={styles.sectionTitle}>
               <Activity size={24} color="#3498db" />
@@ -629,7 +645,14 @@ useEffect(() => {
         </div>
 
         {/* Charts Section */}
-        <div style={styles.chartsSection}>
+      <div
+  style={{
+    ...styles.chartsSection,
+    width: isMobile ? "100%" : "100%", // make it fill space on desktop
+    maxWidth: isMobile ? "100%" : "700px", // adjust as needed
+  }}
+>
+
           <div style={{ ...styles.card, ...styles.chartCard }}>
             <h3 style={styles.sectionTitle}>
               <TrendingUp size={20} color="#27ae60" />
