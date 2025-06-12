@@ -220,22 +220,20 @@ useEffect(() => {
 
   // Inline styles
   const styles = {
-   app: {
-  minHeight: "100vh",
-  width: "100vw",
-  overflowX: "hidden", // ✅ Add this line
-  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-  padding: "20px 0",
-  fontFamily:
-    '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif',
-},
-
+    app: {
+      minHeight: "100vh",
+      width: "98vw",
+      background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      padding: "20px 0",
+      fontFamily:
+        '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif',
+    },
     container: {
       width:"100%",
       maxWidth: "1400px",
       margin: "0 auto",
       padding: "0 20px",
-      boxSizing: "border-box",
+      
     },
     header: {
       textAlign: "center",
@@ -739,7 +737,7 @@ useEffect(() => {
               marginTop: "40px",
               color: "white",
               opacity: 0.7,
-              padding: "0 10px",
+              marginRight: "300px",
             }}
           >
             <p>© {new Date().getFullYear()} CardioFola — Built by Fola 💙</p>
