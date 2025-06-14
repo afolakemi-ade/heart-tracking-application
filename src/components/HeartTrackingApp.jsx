@@ -465,18 +465,7 @@ chartsColumn: {
     },
   };
 // const isMobile = window.innerWidth <= 768;
-// const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-
-// useEffect(() => {
-//   const handleResize = () => {
-//     setIsMobile(window.innerWidth <= 768);
-//   };
-
-//   window.addEventListener("resize", handleResize);
-
-//   // Clean up listener on component unmount
-//   return () => window.removeEventListener("resize", handleResize);
-// }, []);
+// npm run
 
   return (
   <div style={styles.app}>
@@ -759,19 +748,24 @@ chartsColumn: {
             </div>
           )}
 
-          <div
-            style={{
-              textAlign: "center",
-              marginTop: "40px",
-              color: "white",
-              opacity: 0.7,
-              padding: "0 10px",
-            }}
-          >
-            <p>© {new Date().getFullYear()} CardioFola — Built by Fola 💙</p>
-          </div>
+          
         </div>
-      </div>
+        </div>
+          <div
+  style={{
+    width: "100%",
+    textAlign: "center",
+    marginTop: "40px",
+    padding: "20px 10px",
+    color: "white",
+    opacity: 0.7,
+    display: isMobile ? "block" : "flex",
+    justifyContent: isMobile ? "initial" : "center",
+    alignItems: isMobile ? "initial" : "center",
+  }}
+>
+  <p style={{ margin: 0 }}>© {new Date().getFullYear()} CardioFola — Built by Fola 💙</p>
+</div>
     </div>
   </div>
 );
