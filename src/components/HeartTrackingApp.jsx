@@ -35,6 +35,14 @@ const HeartTrackingApp = () => {
   const [model, setModel] = useState(null);
   const [isTraining, setIsTraining] = useState(false);
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // Sample historical data for visualization
   const [historicalData, setHistoricalData] = useState([
 
@@ -115,6 +123,7 @@ const HeartTrackingApp = () => {
 
     return { inputs, outputs };
   };
+  
 
   const addReading = async () => {
     if (!heartRate || !bloodPressureSys || !bloodPressureDia || !age) {
@@ -206,13 +215,6 @@ const HeartTrackingApp = () => {
         "Monitor blood pressure and heart rate daily",
       ],
     };
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-
-useEffect(() => {
-  const handleResize = () => setIsMobile(window.innerWidth < 768);
-  window.addEventListener("resize", handleResize);
-  return () => window.removeEventListener("resize", handleResize);
-}, []);
 
 
     return tips[prediction.risk] || [];
@@ -463,18 +465,18 @@ chartsColumn: {
     },
   };
 // const isMobile = window.innerWidth <= 768;
-const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+// const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-useEffect(() => {
-  const handleResize = () => {
-    setIsMobile(window.innerWidth <= 768);
-  };
+// useEffect(() => {
+//   const handleResize = () => {
+//     setIsMobile(window.innerWidth <= 768);
+//   };
 
-  window.addEventListener("resize", handleResize);
+//   window.addEventListener("resize", handleResize);
 
-  // Clean up listener on component unmount
-  return () => window.removeEventListener("resize", handleResize);
-}, []);
+//   // Clean up listener on component unmount
+//   return () => window.removeEventListener("resize", handleResize);
+// }, []);
 
   return (
   <div style={styles.app}>
