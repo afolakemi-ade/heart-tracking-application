@@ -477,7 +477,7 @@ chartsColumn: {
           <h1 style={styles.headerTitleH1}>CardioFola</h1>
         </div>
         <p style={styles.headerSubtitle}>
-          Enhanced Heart Tracking with AI-Powered Health Predictions
+          Enhanced Heart Tracking with ANN-Based Health Predictions
         </p>
         {isTraining && (
           <div style={styles.trainingIndicator}>
