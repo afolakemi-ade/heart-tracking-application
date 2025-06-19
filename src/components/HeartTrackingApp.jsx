@@ -43,9 +43,9 @@ const HeartTrackingApp = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState('');
 
-  const API_URL = process.env.NODE_ENV === 'development' 
-  ? 'http://localhost:3002' 
-  : ''; // Will force demo mode in production
+  const API_URL = process.env.NODE_ENV === 'development'
+  ? 'http://localhost:3002'
+  : 'https://your-deployed-backend.com';
   const modelRef = useRef(null);
 
   // Fallback data for testing with more varied values for better curves
@@ -377,6 +377,11 @@ const handleLogin = async (e) => {
 
     return tips[prediction.risk] || [];
   };
+  const shouldShowError = (error) => {
+  if (!API_URL) return false; // Don't show in demo mode
+  if (error.includes('Failed to fetch')) return false;
+  return true;
+};
 
   // Styles object
   const styles = {
@@ -773,18 +778,20 @@ const handleLogin = async (e) => {
           </div>
         )}
         
-        {apiError && (
-          <div style={{
-            background: 'rgba(231, 76, 60, 0.2)',
-            color: 'white',
-            padding: '15px',
-            borderRadius: '8px',
-            marginBottom: '20px',
-            textAlign: 'center'
-          }}>
-            {apiError}
-          </div>
-        )}
+        {apiError && shouldShowError(apiError) && (
+  <div style={{  
+          background: 'rgba(231, 76, 60, 0.2)',
+           color: 'white',
+           padding: '15px',
+           borderRadius: '8px',
+           marginBottom: '20px',
+           textAlign: 'center'}}>
+    {apiError.replace('Failed to fetch: ', '')}
+  </div>
+)}
+         
+        
+          
 
         <div style={{
           ...styles.mainContent,
