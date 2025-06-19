@@ -43,7 +43,9 @@ const HeartTrackingApp = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState('');
 
-  const API_URL = 'http://localhost:3002';
+  const API_URL = process.env.NODE_ENV === 'development' 
+  ? 'http://localhost:3002' 
+  : ''; // Will trigger demo mode in production
   const modelRef = useRef(null);
 
   // Fallback data for testing with more varied values for better curves
@@ -79,42 +81,24 @@ const HeartTrackingApp = () => {
       setAuthError(error.message);
     }
   };
+const handleLogin = async (e) => {
+  e.preventDefault();
+  
+  // Bypass API in production
+  if (process.env.NODE_ENV === 'production') {
+    const demoUser = {
+      id: 'demo-user',
+      email,
+      password: 'demo' // Not secure - for demo only
+    };
+    localStorage.setItem('user', JSON.stringify(demoUser));
+    setIsAuthenticated(true);
+    setHistoricalData(demoData);
+    return;
+  }
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      // First check if server is responding
-      const ping = await fetch(`${API_URL}/users`);
-      if (!ping.ok) throw new Error('Server not responding');
-      
-      // Then make the actual query
-      const response = await fetch(`${API_URL}/users?email=${encodeURIComponent(email)}`);
-      
-      if (!response.ok) throw new Error('Failed to fetch user');
-      
-      const users = await response.json();
-      
-      if (!users.length) throw new Error('User not found');
-      if (users[0].password !== password) throw new Error('Incorrect password');
-      
-      localStorage.setItem('user', JSON.stringify(users[0]));
-      setIsAuthenticated(true);
-      setAuthError('');
-      fetchUserReadings(users[0].id);
-    } catch (error) {
-      console.error('Login error:', error);
-      setAuthError(error.message);
-      // Load demo data if API fails
-      setHistoricalData(demoData);
-      setReadings(demoData.map(item => ({
-        ...item,
-        id: Math.random().toString(36).substring(7),
-        timestamp: new Date(item.date).toISOString(),
-        userId: 'demo'
-      })));
-    }
-  };
-
+  // Original login code...
+};
   const handleLogout = () => {
     localStorage.removeItem('user');
     setIsAuthenticated(false);
