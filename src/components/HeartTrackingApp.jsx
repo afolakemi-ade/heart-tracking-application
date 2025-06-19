@@ -45,7 +45,7 @@ const HeartTrackingApp = () => {
 
   const API_URL = process.env.NODE_ENV === 'development' 
   ? 'http://localhost:3002' 
-  : ''; // Will trigger demo mode in production
+  : ''; // Will force demo mode in production
   const modelRef = useRef(null);
 
   // Fallback data for testing with more varied values for better curves
@@ -116,7 +116,7 @@ const handleLogin = async (e) => {
       const response = await fetch(`${API_URL}/readings?userId=${userId}`);
       
       if (!response.ok) {
-        throw new Error('Failed to fetch readings');
+        throw new Error('Failed to fetch reading');
       }
       
       const data = await response.json();
