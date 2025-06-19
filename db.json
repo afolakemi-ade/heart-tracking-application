@@ -1,0 +1,22 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "email": "afolakemiakinwonmi@gmail.com",
+      "password": "yourpassword"
+    }
+  ],
+  "readings": [
+    {
+      "id": "683f",
+      "heartRate": 72,
+      "systolic": 120,
+      "diastolic": 80,
+      "age": 35,
+      "cholesterol": 100,
+      "timestamp": "2025-06-19T00:30:28.046Z",
+      "date": "2025-06-19",
+      "userId": "1"
+    }
+  ]
+}
